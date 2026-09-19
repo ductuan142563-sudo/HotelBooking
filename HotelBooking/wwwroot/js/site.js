@@ -1,0 +1,1 @@
+﻿console.log("Hotel Booking Website loaded successfully.");
