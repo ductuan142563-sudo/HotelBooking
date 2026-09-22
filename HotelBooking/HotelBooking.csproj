@@ -26,8 +26,6 @@
     <Folder Include="Middleware\" />
     <Folder Include="Helpers\" />
     <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Views\Hotels\" />
     <Folder Include="Views\Booking\" />
     <Folder Include="Views\Rooms\" />

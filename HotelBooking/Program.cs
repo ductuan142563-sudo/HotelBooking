@@ -1,5 +1,6 @@
 using HotelBooking.Data;
 using HotelBooking.Models;
+using HotelBooking.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Cookie settings
 builder.Services.ConfigureApplicationCookie(options =>
