@@ -8,16 +8,13 @@ namespace HotelBooking.Models
         [Key]
         public int HotelId { get; set; }
 
-        [Required]
-        [StringLength(200)]
+        [Required, StringLength(200)]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(300)]
+        [Required, StringLength(300)]
         public string Address { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(100)]
+        [Required, StringLength(100)]
         public string City { get; set; } = string.Empty;
 
         [StringLength(2000)]
@@ -36,21 +33,24 @@ namespace HotelBooking.Models
         [StringLength(200)]
         public string? Website { get; set; }
 
-        public TimeSpan CheckInTime { get; set; } = new TimeSpan(14, 0, 0);
-        public TimeSpan CheckOutTime { get; set; } = new TimeSpan(12, 0, 0);
+        public TimeSpan CheckInTime { get; set; } = new TimeSpan(14, 0, 0);   // 14:00
+        public TimeSpan CheckOutTime { get; set; } = new TimeSpan(12, 0, 0);  // 12:00
 
-        public bool Status { get; set; } = true; // true = Active
+        [StringLength(20)]
+        public string Status { get; set; } = "Active";   // Active, Inactive, Maintenance
 
-        [StringLength(255)]
-        public string? CoverImage { get; set; }
+        [StringLength(500)]
+        public string? Thumbnail { get; set; }           // Ảnh đại diện
+
+        [StringLength(2000)]
+        public string? Gallery { get; set; }             // Nhiều ảnh, phân cách bằng |
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
         // Navigation
-        public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
-        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-        public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+        public ICollection<Room> Rooms { get; set; } = new List<Room>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

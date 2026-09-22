@@ -34,6 +34,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
 
 // Cookie settings
 builder.Services.ConfigureApplicationCookie(options =>

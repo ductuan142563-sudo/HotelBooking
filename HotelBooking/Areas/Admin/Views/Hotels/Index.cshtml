@@ -1,0 +1,99 @@
+﻿@model List<HotelBooking.Models.Hotel>
+@{
+    ViewData["Title"] = "Quản lý khách sạn";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml"; // hoặc _Layout nếu chưa có AdminLayout
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Quản lý khách sạn</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Thêm khách sạn
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-4">
+            <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm tên / thành phố..." />
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Active" selected="@(ViewBag.Status == "Active")">Active</option>
+                <option value="Inactive" selected="@(ViewBag.Status == "Inactive")">Inactive</option>
+                <option value="Maintenance" selected="@(ViewBag.Status == "Maintenance")">Maintenance</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Lọc</button>
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Tên</th>
+                        <th>Thành phố</th>
+                        <th>Sao</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var h in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@(h.Thumbnail ?? "/images/no-image.jpg")" width="60" height="40" class="rounded object-fit-cover" />
+                            </td>
+                            <td class="fw-semibold">@h.Name</td>
+                            <td>@h.City</td>
+                            <td>
+                                @for (int i = 0; i < h.Star; i++)
+                                {
+                                    <i class="bi bi-star-fill text-warning small"></i>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @(h.Status == "Active" ? "bg-success" : h.Status == "Inactive" ? "bg-secondary" : "bg-warning text-dark")">
+                                    @h.Status
+                                </span>
+                            </td>
+                            <td>@h.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@h.HotelId" class="btn btn-sm btn-outline-info" title="Chi tiết">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@h.HotelId" class="btn btn-sm btn-outline-primary" title="Sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@h.HotelId" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

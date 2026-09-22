@@ -1,0 +1,166 @@
+﻿@model HotelBooking.ViewModels.Admin.HotelFormViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa khách sạn";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa khách sạn
+        </h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Quay lại
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                
+                <input type="hidden" asp-for="HotelId" />
+                <input type="hidden" asp-for="CurrentThumbnail" />
+                <input type="hidden" asp-for="CurrentGallery" />
+
+                <div class="row g-3">
+                    <!-- Tên + Số sao -->
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control form-control-lg" placeholder="Ví dụ: Grand Hotel Saigon" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Star" class="form-label fw-semibold"></label>
+                        <select asp-for="Star" class="form-select form-select-lg">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i sao</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Star" class="text-danger"></span>
+                    </div>
+
+                    <!-- Địa chỉ + Thành phố -->
+                    <div class="col-md-8">
+                        <label asp-for="Address" class="form-label fw-semibold"></label>
+                        <input asp-for="Address" class="form-control" placeholder="Số nhà, đường, phường/xã..." />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label fw-semibold"></label>
+                        <input asp-for="City" class="form-control" placeholder="Hồ Chí Minh, Hà Nội..." />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+
+                    <!-- Mô tả -->
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"
+                                  placeholder="Mô tả chi tiết về khách sạn, tiện nghi, vị trí..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <!-- Liên hệ -->
+                    <div class="col-md-4">
+                        <label asp-for="Phone" class="form-label fw-semibold"></label>
+                        <input asp-for="Phone" class="form-control" placeholder="0901234567" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Email" class="form-label fw-semibold"></label>
+                        <input asp-for="Email" class="form-control" placeholder="contact@hotel.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Website" class="form-label fw-semibold"></label>
+                        <input asp-for="Website" class="form-control" placeholder="https://www.hotel.com" />
+                        <span asp-validation-for="Website" class="text-danger"></span>
+                    </div>
+
+                    <!-- Giờ nhận / trả phòng + Trạng thái -->
+                    <div class="col-md-4">
+                        <label asp-for="CheckInTime" class="form-label fw-semibold"></label>
+                        <input asp-for="CheckInTime" type="time" class="form-control" />
+                        <span asp-validation-for="CheckInTime" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="CheckOutTime" class="form-label fw-semibold"></label>
+                        <input asp-for="CheckOutTime" type="time" class="form-control" />
+                        <span asp-validation-for="CheckOutTime" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Status" class="form-label fw-semibold"></label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <!-- Ảnh đại diện hiện tại + Upload mới -->
+                    <div class="col-md-6">
+                        <label asp-for="ThumbnailFile" class="form-label fw-semibold"></label>
+                        
+                        @if (!string.IsNullOrEmpty(Model.CurrentThumbnail))
+                        {
+                            <div class="mb-2">
+                                <img src="@Model.CurrentThumbnail"
+                                     alt="Ảnh hiện tại"
+                                     class="img-thumbnail rounded"
+                                     style="max-height: 150px; object-fit: cover;" />
+                                <div class="form-text">Ảnh đại diện hiện tại</div>
+                            </div>
+                        }
+
+                        <input asp-for="ThumbnailFile" type="file" class="form-control" accept="image/*" />
+                        <div class="form-text">Chọn ảnh mới nếu muốn thay đổi (để trống nếu giữ nguyên)</div>
+                        <span asp-validation-for="ThumbnailFile" class="text-danger"></span>
+                    </div>
+
+                    <!-- Gallery hiện tại + Upload mới -->
+                    <div class="col-md-6">
+                        <label asp-for="GalleryFiles" class="form-label fw-semibold"></label>
+
+                        @if (!string.IsNullOrEmpty(Model.CurrentGallery))
+                        {
+                            <div class="mb-2 d-flex flex-wrap gap-2">
+                                @foreach (var img in Model.CurrentGallery.Split('|', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <img src="@img"
+                                         class="img-thumbnail rounded"
+                                         style="height: 80px; width: 80px; object-fit: cover;"
+                                         alt="Gallery" />
+                                }
+                                <div class="form-text w-100">Gallery hiện tại</div>
+                            </div>
+                        }
+
+                        <input asp-for="GalleryFiles" type="file" class="form-control" accept="image/*" multiple />
+                        <div class="form-text">Chọn ảnh mới sẽ thay thế toàn bộ gallery cũ (để trống nếu giữ nguyên)</div>
+                        <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-check-lg me-1"></i>Cập nhật
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                        Hủy
+                    </a>
+                    <a asp-action="Details" asp-route-id="@Model.HotelId" class="btn btn-outline-info btn-lg px-4">
+                        <i class="bi bi-eye me-1"></i>Xem chi tiết
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
