@@ -1,0 +1,167 @@
+﻿@model HotelBooking.ViewModels.RoomListViewModel
+@{
+    ViewData["Title"] = "Quản lý Phòng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-door-open"></i> Quản lý Phòng</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Thêm phòng mới
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="searchTerm" value="@Model.SearchTerm"
+                           class="form-control" placeholder="Số phòng / mô tả..." />
+                </div>
+                <div class="col-md-2">
+                    <select name="hotelId" class="form-select" asp-items="Model.Hotels">
+                        <option value="">-- Tất cả KS --</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="roomTypeId" class="form-select" asp-items="Model.RoomTypes">
+                        <option value="">-- Loại phòng --</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<RoomStatus>()">
+                        <option value="">-- Trạng thái --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-search"></i> Lọc
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Số phòng</th>
+                        <th>Khách sạn</th>
+                        <th>Loại phòng</th>
+                        <th>Giá</th>
+                        <th>Sức chứa</th>
+                        <th>Tầng</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Rooms)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Image))
+                                {
+                                    <img src="@item.Image" alt="@item.RoomNumber"
+                                         style="width:60px;height:45px;object-fit:cover;" class="rounded" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No image</span>
+                                }
+                            </td>
+                            <td><strong>@item.RoomNumber</strong></td>
+                            <td>@item.Hotel?.Name</td>
+                            <td>@item.RoomType?.Name</td>
+                            <td>@item.Price.ToString("N0") ₫</td>
+                            <td>@item.Capacity</td>
+                            <td>@(item.Floor?.ToString() ?? "-")</td>
+                            <td>
+                                @switch (item.Status)
+                                {
+                                    case RoomStatus.Available:
+                                        <span class="badge bg-success">Available</span>
+                                        break;
+                                    case RoomStatus.Occupied:
+                                        <span class="badge bg-warning text-dark">Occupied</span>
+                                        break;
+                                    case RoomStatus.Maintenance:
+                                        <span class="badge bg-info">Maintenance</span>
+                                        break;
+                                    case RoomStatus.Inactive:
+                                        <span class="badge bg-secondary">Inactive</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Details" asp-route-id="@item.RoomId"
+                                           class="btn btn-outline-info" title="Chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.RoomId"
+                                           class="btn btn-outline-primary" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.RoomId" method="post"
+                                          onsubmit="return confirm('Bạn chắc chắn muốn xóa phòng này?');"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-danger" title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <div class="card-footer">
+                <nav>
+                    <ul class="pagination justify-content-center mb-0">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@i"
+                                       asp-route-searchTerm="@Model.SearchTerm"
+                                       asp-route-hotelId="@Model.HotelId"
+                                       asp-route-roomTypeId="@Model.RoomTypeId"
+                                       asp-route-status="@Model.Status">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</div>

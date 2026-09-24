@@ -22,35 +22,45 @@ namespace HotelBooking.Models
         [Required]
         public int RoomTypeId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Số phòng là bắt buộc")]
         [StringLength(20)]
+        [Display(Name = "Số phòng")]
         public string RoomNumber { get; set; } = string.Empty;
 
+        [Required]
         [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "Giá / đêm")]
         public decimal Price { get; set; }
 
+        [Required]
         [Range(1, 20)]
-        public int Capacity { get; set; } = 2;
+        [Display(Name = "Sức chứa")]
+        public int Capacity { get; set; }
 
-        public int Floor { get; set; }
+        [Display(Name = "Tầng")]
+        public int? Floor { get; set; }
 
         [StringLength(1000)]
+        [Display(Name = "Mô tả")]
         public string? Description { get; set; }
 
+        [Required]
+        [Display(Name = "Trạng thái")]
         public RoomStatus Status { get; set; } = RoomStatus.Available;
 
         [StringLength(255)]
+        [Display(Name = "Ảnh chính")]
         public string? Image { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
 
         // Navigation
         [ForeignKey("HotelId")]
-        public virtual Hotel Hotel { get; set; } = null!;
+        public virtual Hotel? Hotel { get; set; }
 
         [ForeignKey("RoomTypeId")]
-        public virtual RoomType RoomType { get; set; } = null!;
+        public virtual RoomType? RoomType { get; set; }
 
         public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
     }

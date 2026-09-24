@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
-namespace HotelBooking.Models
+namespace HotelBooking.ViewModels
 {
-    public class RoomType
+    public class RoomTypeViewModel
     {
-        [Key]
         public int RoomTypeId { get; set; }
 
         [Required(ErrorMessage = "Tên loại phòng là bắt buộc")]
@@ -18,7 +17,7 @@ namespace HotelBooking.Models
         public string? Description { get; set; }
 
         [Required]
-        [Range(1, 20)]
+        [Range(1, 20, ErrorMessage = "Số khách từ 1-20")]
         [Display(Name = "Số khách tối đa")]
         public int MaxGuests { get; set; }
 
@@ -27,24 +26,19 @@ namespace HotelBooking.Models
         public string? BedType { get; set; }
 
         [Display(Name = "Diện tích (m²)")]
-        [Column(TypeName = "decimal(18,2)")]
         public decimal? Area { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, 100000000)]
         [Display(Name = "Giá cơ bản")]
         public decimal BasePrice { get; set; }
 
-        [StringLength(255)]
-        [Display(Name = "Ảnh")]
-        public string? Image { get; set; }
+        [Display(Name = "Ảnh hiện tại")]
+        public string? ExistingImage { get; set; }
+
+        [Display(Name = "Upload ảnh mới")]
+        public IFormFile? ImageFile { get; set; }
 
         public bool IsActive { get; set; } = true;
-
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
-
-        // Navigation
-        public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
     }
 }

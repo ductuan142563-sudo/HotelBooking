@@ -1,0 +1,89 @@
+﻿@model HotelBooking.Models.RoomType
+@{
+    ViewData["Title"] = "Chi tiết Loại phòng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-info-circle"></i> Chi tiết Loại phòng</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.RoomTypeId" class="btn btn-primary me-2">
+                <i class="bi bi-pencil"></i> Sửa
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="@Model.Image" alt="@Model.Name"
+                             class="img-fluid rounded border" style="max-height:250px;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="bg-light d-flex align-items-center justify-content-center rounded border"
+                             style="height:200px;">
+                            <span class="text-muted">Không có ảnh</span>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-8">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width:180px;">Tên loại phòng</th>
+                            <td><strong>@Model.Name</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Số khách tối đa</th>
+                            <td>@Model.MaxGuests người</td>
+                        </tr>
+                        <tr>
+                            <th>Loại giường</th>
+                            <td>@(Model.BedType ?? "-")</td>
+                        </tr>
+                        <tr>
+                            <th>Diện tích</th>
+                            <td>@(Model.Area.HasValue ? Model.Area.Value.ToString("0.##") + " m²" : "-")</td>
+                        </tr>
+                        <tr>
+                            <th>Giá cơ bản</th>
+                            <td class="text-primary fw-bold">@Model.BasePrice.ToString("N0") ₫</td>
+                        </tr>
+                        <tr>
+                            <th>Trạng thái</th>
+                            <td>
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Ngày tạo</th>
+                            <td>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                        <tr>
+                            <th>Cập nhật lần cuối</th>
+                            <td>@(Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                        </tr>
+                        <tr>
+                            <th>Mô tả</th>
+                            <td>@(Model.Description ?? "Không có mô tả")</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,7 +25,6 @@
     <Folder Include="Areas\Admin\ViewModels\" />
     <Folder Include="Middleware\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Views\Booking\" />
     <Folder Include="Views\Rooms\" />
   </ItemGroup>
